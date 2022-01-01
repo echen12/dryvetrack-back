@@ -16,7 +16,7 @@ module.exports = async (req, res, next) => {
     // }
 
     try {
-        let user = await JWT.verify(token, "fFAFASF@%@#$fsdaf2");
+        let user = await JWT.verify(token, process.env.KEY);
         req.email = user.email;
         next()
     } catch (error) {
