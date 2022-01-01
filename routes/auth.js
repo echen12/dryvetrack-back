@@ -15,8 +15,7 @@ router.post("/signup", [
             }
         )
 ], async (req, res) => {
-    const { password, email } = req.body;
-
+    const { password, email, firstName, lastName } = req.body;
     const errors = validationResult(req);
     let proceed = true;
 
@@ -40,7 +39,7 @@ router.post("/signup", [
                 proceed = false;
                 return res.status(400).json(
                     {
-                        msg: "user has already been entered"
+                        msg: "User has already been entered!"
                     }
                 );
             }
@@ -53,81 +52,37 @@ router.post("/signup", [
         const user = new Vehicle({
             userInfo:
             {
+                firstName: firstName,
+                lastName: lastName,
                 email: email,
                 password: hashedPassword,
             },
-            vehicleInfo: [
-                // {
-                //     make: "",
-                //     model: "",
-                //     modelYear: "",
-                //     vehicleType: "",
-                //     vin: "",
-                //     plateNumber: "",
-                //     insuranceExpiryDate: "",
-                //     color: "",
-                //     mileageInformation: [
-                //         {
-                //             lastUpdated: "",
-                //             lastMileage: "",
-                //             oilChangeStartInterval: false,
-                //             oilChangeInterval: "",
-                //             _id: false
-                //         }
-                //     ],
-                //     warrantyInfo: [
-                //         {
-                //             warrantyTitle: "",
-                //             warrantyProvider: "",
-                //             warrantyDetail: "",
-                //             warrantyDate: "",
-                //             _id: false
-                //         }
-                //     ]
-                // }
-            ]
+            vehicleInfo: []
         })
 
         user.save().then(savedUser => {
             return res.status(200).json(
                 {
-                    msg: "successfully registered"
+                    msg: "Successfully registered!"
                 }
             )
         })
     }
-
-    // check if user doesn't already exist
-    // if user already exists, throw error
-    // res.status 400 
-
-    // const token = await JWT.sign({
-    //     email
-    // }, "fFAFASF@%@#$fsdaf2", {
-    //     expiresIn: 360000
-    // })
-
-    //res.json(token);
-
-
 
 })
 
 router.post('/login', async (req, res) => {
     const { password, email } = req.body;
     let pw = ""
-
-    let correctUser = true;
+    let id = ""
+    //let correctUser = true;
 
     await Vehicle.find({}).then(vehicle => {
         vehicle.forEach(d => {
-            //console.log(d.userInfo[0].email);
-            if (d.userInfo[0].email !== email) {
-                correctUser = false;
-            }
 
             if (d.userInfo[0].email === email) {
                 pw = d.userInfo[0].password;
+                id = d.id
             }
         })
     })
@@ -136,18 +91,20 @@ router.post('/login', async (req, res) => {
 
     const token = await JWT.sign({
         email
-    }, "fFAFASF@%@#$fsdaf2", {
+    }, process.env.KEY, {
         expiresIn: 360000
     })
 
-    if (!isMatch || !correctUser) {
+    //console.log(isMatch, correctUser)
+
+    if (!isMatch) {
         return res.status(400).json(
             {
-                msg: "invalid credentials"
+                msg: "Invalid credentials!"
             }
         );
     } else {
-        res.json(token);
+        res.json({token, id});
     }
 
 })

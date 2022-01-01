@@ -3,11 +3,10 @@ const Vehicle = require("../models/vehicle");
 const checkAuth = require("../middleware/checkAuth")
 
 router.get("/vehicle-info", checkAuth, async (req, res) => {
-    //console.log(req.email);
-    await Vehicle.find({}).then(data => {
+    await Vehicle.findById(req.query.key).then(data => {
         res.json({ data: data, user: req.email });
     })
-})
+}) 
 
 // // get individual vehicle details
 // router.get("/vehicle-info/:id", checkAuth, async (req, res) => {
@@ -17,6 +16,8 @@ router.get("/vehicle-info", checkAuth, async (req, res) => {
 
 router.post("/add-vehicle", checkAuth, async (req, res) => {
     const id = req.body.id
+    const vehData = req.body.obj
+    //console.log(id)
     //console.log("ID " + req.body.id)
     //console.log(req.body)
     // await Vehicle.findOneAndUpdate(id,{test: "tet"}).then(res => {
@@ -26,12 +27,10 @@ router.post("/add-vehicle", checkAuth, async (req, res) => {
 
     const veh = await Vehicle.findById(id);
 
-    veh.vehicleInfo = req.body.allVehicles
+    veh.vehicleInfo = vehData
 
     await veh.save();
     res.json(veh)
-
-    console.log("vehicle successfully saved")
 
 })
 
