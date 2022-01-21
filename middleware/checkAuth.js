@@ -1,4 +1,4 @@
-const JWT = require("jsonwebtoken")
+const JWT = require("jsonwebtoken");
 
 
 module.exports = async (req, res, next) => {
@@ -6,14 +6,6 @@ module.exports = async (req, res, next) => {
     if (!token) {
         return res.status(400).json("no token found");
     }
-
-    //let user = await JWT.verify(token, "fFAFASF@%@#$fsdaf2");
-
-    // if (user) {
-    //     next()
-    // } else {
-    //     return res.status(400).json("token invalid");
-    // }
 
     try {
         let user = await JWT.verify(token, process.env.KEY);
