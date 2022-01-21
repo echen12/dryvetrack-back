@@ -1,8 +1,8 @@
 const router = require("express").Router();
-const { check, validationResult } = require("express-validator")
-const bcrypt = require("bcrypt")
+const { check, validationResult } = require("express-validator");
+const bcrypt = require("bcrypt");
 const Vehicle = require('../models/vehicle');
-const JWT = require("jsonwebtoken")
+const JWT = require("jsonwebtoken");
 
 
 router.post("/signup", [
@@ -34,7 +34,6 @@ router.post("/signup", [
 
     await Vehicle.find({}).then(data => {
         data.forEach(d => {
-            //console.log(d.userInfo[0].email);
             if (d.userInfo[0].email === email) {
                 proceed = false;
                 return res.status(400).json(
@@ -73,16 +72,15 @@ router.post("/signup", [
 
 router.post('/login', async (req, res) => {
     const { password, email } = req.body;
-    let pw = ""
-    let id = ""
-    //let correctUser = true;
+    let pw = "";
+    let id = "";
 
     await Vehicle.find({}).then(vehicle => {
         vehicle.forEach(d => {
 
             if (d.userInfo[0].email === email) {
                 pw = d.userInfo[0].password;
-                id = d.id
+                id = d.id;
             }
         })
     })
@@ -109,4 +107,4 @@ router.post('/login', async (req, res) => {
 
 })
 
-module.exports = router
+module.exports = router;
